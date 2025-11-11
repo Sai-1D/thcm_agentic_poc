@@ -1,16 +1,17 @@
 # src/main.py
 from langgraph.graph import StateGraph, END, START
 from src.models.state import State
+from langgraph.types import Command
 from src.utils.data_loader import load_catalog
 from src.agents.orchestrator import orchestrator_node, search_node
 from src.agents.disambiguator import disambiguator_node, selector_node
 from src.agents.cart_manager import cart_manager_node
 from src.agents.payment_agent import payment_agent_node
 from src.agents.issue_agent import issue_reporting_node
-from src.agents.controller import controller_node, route_from_controller, pause_node, should_continue
+from src.agents.controller import controller_node, route_from_controller, pause_node
+from langgraph.checkpoint.memory import MemorySaver
 
 products = load_catalog("data/product_catalog.xlsx")
-print("Products loaded: ", len(products))
 
 # Build graph
 graph = StateGraph(State)
@@ -27,56 +28,58 @@ graph.add_node("pause", pause_node)
 
 # Controller node
 graph.add_node("controller", controller_node)
-graph.add_conditional_edges("controller", route_from_controller)
+graph.add_conditional_edges(
+    "controller",
+    route_from_controller,
+    {
+        "issue_reporter": "issue_reporter",
+        "search": "search",
+        "disambiguator": "disambiguator",
+        "pause": "pause",
+        "selector": "selector",
+        "cart_manager": "cart_manager",
+        "payment": "payment",
+    }
+)
 
 # Entry point
 graph.set_entry_point("orchestrator")
 graph.add_edge("orchestrator", "controller")
 
 # Flow edges
-graph.add_edge("search", "controller")
 graph.add_edge("disambiguator", "controller")
 graph.add_edge("selector", "controller")
 graph.add_edge("cart_manager", "controller")
-graph.add_edge("pause", "controller")  
 graph.add_edge("payment", END)
 graph.add_edge("issue_reporter", END)
 graph.add_edge("pause", END)
 
-# Compile graph
-app = graph.compile()
+checkpointer = MemorySaver()   # Use an in-memory checkpointer for testing
+app = graph.compile(checkpointer=checkpointer)
 
+state = State()
+user_input = input("\n\nUser: ")
+state.user_query = user_input.strip()
 
+config = {"configurable": {"thread_id": "session-001"}}
+result = app.invoke(state, config=config)
+while "__interrupt__" in result:
+    interrupt_value = result["__interrupt__"][0].value
+    interrupt_type = interrupt_value["type"]
 
+    if interrupt_type == "product_selection":
+        print(interrupt_value["question"])
+        print(interrupt_value["options"])
+        user_choice = input("Enter article number: ").strip()
+        result = app.invoke(Command(resume={"article_number": user_choice}), config=config)
 
-def run_loop():
-    state = State()
+    elif interrupt_type == "payment_info":
+        print(interrupt_value["question"])
+        card_number = input("Enter card number: ").strip()
+        cvv = input("Enter CVV: ").strip()
+        result = app.invoke(Command(resume={"card_number": card_number, "cvv": cvv}), config=config)
+    else:
+        print("Unknown Interrupt")
+        break
 
-    while True:
-        user_input = input("User: ")
-        if user_input.lower() in ["exit", "quit"]:
-            print("Exiting...")
-            break
-
-        if state.matched_products and not state.selected_products:
-            state.selected_product_code = user_input.strip()
-        else:
-            state.user_query = user_input.strip()
-            state.selected_product_code = None
-            state.selected_products.clear()
-            state.matched_products.clear()
-            state.messages.clear()
-
-        result_dict = app.invoke(state)
-        state = State(**result_dict)
-
-        for msg in state.messages:
-            print("Bot:", msg)
-
-        if state.payment_status == "authorized" or state.issue_ticket_id:
-            print("Conversation complete.")
-            break
-
-
-if __name__ == "__main__":
-    run_loop()
+print(State(**result))
