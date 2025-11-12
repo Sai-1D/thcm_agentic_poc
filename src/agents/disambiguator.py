@@ -16,18 +16,19 @@ def disambiguator_node(state: State) -> State:
         return state
 
     # Show top 3 matches
-    summary = "\n".join(
+    summary = [
         f"{i+1}. {p.article_number} - {p.identifier} ({p.price} {p.currency})"
         for i, p in enumerate(matches[:3])
-    )
+    ]
     state.messages.append(f"Multiple products matched your query:\n{summary}")
     logger.info("[DISAMBIGUATOR_NODE] Multiple matches found:")
-    logger.debug("[DISAMBIGUATOR_NODE] Multiple matches found:\n%s", summary)
+    logger.debug(f"[DISAMBIGUATOR_NODE] Multiple matches found:\n{summary}")
 
     selection_details = interrupt({
-        "type": "product_selection",
-        "question": "Please enter the article number to select:",
-        "options": summary
+        "target": "product_selection",
+        "fields": [
+            {"name": "article_number", "prompt": "Please enter the article number to select", "options": '\n'.join(summary)},
+        ],
     })
 
     state.selected_product_code = selection_details.get('article_number')

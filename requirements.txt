@@ -3,3 +3,6 @@ pandas>=2.0.0
 langgraph>=0.0.1
 openpyxl>=3.0.0  # Required for pandas Excel support
 uvicorn[standard]
+python-dotenv==1.0.1
+twilio==9.2.3
+python-multipart>=0.0.6

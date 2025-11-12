@@ -20,9 +20,13 @@ def payment_agent_node(state: State) -> State:
 
     # Trigger interrupt for card details
     logger.info("[PAYMENT_AGENT] Triggering payment_info interrupt for card details.")
+
     card_details = interrupt({
-        "type": "payment_info",
-        "question": "Please enter the card details:",
+        "target": "payment_info",
+        "fields": [
+            {"name": "card_number", "prompt": "Please enter the card number:", "options": ""},
+            {"name": "cvv", "prompt": "Please enter the cvv:", "options": ""},
+        ],
     })
 
     logger.info("[PAYMENT_AGENT] Received card details: %s", card_details)
