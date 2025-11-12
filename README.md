@@ -1,62 +1,60 @@
-#setup venv and install requirements. 
+# THCM Agentic POC
 
-#Folder Structure
-
+```
 thcm_agentic_poc/
 │
-├── .venv/                  # virtual environment
+├── .venv/ # Python virtual environment
 ├── data/
-│   └── product_catalog.xlsx # your THCM spreadsheet
+│ └── product_catalog.xlsx # Product catalog spreadsheet
 ├── src/
-│   ├── __init__.py
-│   ├── main.py              # entry point (terminal loop)
-│   ├── agents/
-│   │   ├── __init__.py
-│   │   ├── orchestrator.py
-│   │   ├── catalog_search.py
-│   │   ├── cart_manager.py
-│   │   ├── payment_agent.py
-│   │   └── order_processor.py
-│   ├── models/
-│   │   ├── __init__.py
-│   │   ├── product.py       # dataclass for product
-│   │   └── state.py         # conversation state
-│   └── utils/
-│       ├── __init__.py
-│       └── data_loader.py   # parse spreadsheet
+│ ├── __init__.py
+│ ├── main.py # Console application entry point
+│ ├── graph.py # Workflow graph setup
+│ ├── agents/ # Node implementations
+│ │ ├── __init__.py
+│ │ ├── cart_manager.py
+│ │ ├── controller.py
+│ │ ├── disambiguator.py
+│ │ ├── issue_agent.py
+│ │ ├── orchestrator.py
+│ │ └── payment_agent.py
+│ ├── models/ # Core data models
+│ │ ├── __init__.py
+│ │ ├── product.py # Product dataclass
+│ │ └── state.py # Conversation state
+│ └── utils/
+│ ├── __init__.py
+│ ├── cache.py
+│ ├── logger.py
+│ └── data_loader.py # Load product catalog
 │
-├── requirements.txt         # pinned dependencies
-└── README.md                # project notes
+├── env_example # Example environment variables
+├── app.py # Twilio / FastAPI webhook
+├── requirements.txt # Pinned dependencies
+└── README.md # Project documentation
+```
 
+## Setup
 
+```
+python -m venv .venv
+source .venv/bin/activate      # Linux / Mac
+.venv\Scripts\activate         # Windows
+pip install -r requirements.txt
+```
 
-## Basic graph nodes and transitons
+* Copy env_example → .env and update as needed.
 
-# Build graph
-graph = StateGraph(State)
-graph.add_node("orchestrator", orchestrator_node)
-graph.add_node("search", lambda s: search_node(s, products))
-graph.add_node("disambiguator", disambiguator_node)
-graph.add_node("selector", selector_node)
-graph.add_node("cart_manager", cart_manager_node)
-graph.add_node("payment", payment_agent_node)
-graph.add_node("issue_reporter", issue_reporting_node)
+## Running
 
-# Define transitions
-graph.add_edge(START, "orchestrator")
-graph.add_conditional_edges(
-    "orchestrator",
-    lambda s: "search" if s.intent == "buy" else "issue_reporter" if s.intent == "issue" else "orchestrator"
-)
+### Console application
 
+```
+python -m src.main
+```
 
-#Product flow
-graph.add_edge("search", "disambiguator")
-graph.add_edge("disambiguator", "selector")
-graph.add_edge("selector", "cart_manager")
-graph.add_edge("cart_manager", "payment")
-graph.add_edge("payment", END)
+### Twilio / FastAPI
 
-#Issue flow
-graph.add_edge("issue_reporter", END)
-app = graph.compile()
+```
+python app.py
+```
