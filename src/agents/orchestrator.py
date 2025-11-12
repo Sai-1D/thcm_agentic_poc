@@ -1,5 +1,5 @@
 # src/agents/orchestrator.py
-from langgraph.graph import StateGraph
+from langgraph.graph import StateGraph, END
 from src.models.state import State
 from src.utils.data_loader import search_by_code, search_by_keyword, identify_product_entity
 from langgraph.types import Command
@@ -56,7 +56,7 @@ def search_node(state: State, products: list) -> Command:
             logger.info("[SEARCH_NODE] Found product by code: %s", matches[0].identifier)
         else:
             state.messages.append("No product found for that code.")
-            goto = "pause"
+            goto = END
             logger.info("[SEARCH_NODE] No product found for code: %s", query)
 
     else:
@@ -65,7 +65,7 @@ def search_node(state: State, products: list) -> Command:
         if not keyword:
             state.messages.append("Couldn't identify a product in your query.")
             state.matched_products = []
-            goto = "pause"
+            goto = END
             logger.info("[SEARCH_NODE] Couldn't identify any keyword in query: %s", query)
 
         matches = search_by_keyword(products, keyword)
@@ -77,7 +77,7 @@ def search_node(state: State, products: list) -> Command:
         else:
             state.messages.append(f"No products found for keyword: '{keyword}'")
             state.matched_products = []
-            goto = "pause"
+            goto = END
             logger.info("[SEARCH_NODE] No products found for keyword: '%s'", keyword)
 
     logger.debug("[SEARCH_NODE] End: %s", state)

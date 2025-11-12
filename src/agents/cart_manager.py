@@ -29,12 +29,17 @@ def cart_manager_node(state: State) -> State:
 def order_review_node(state: State) -> State:
     logger.debug("[ORDER_REVIEW] Enter node, current state: %s", state)
 
+    cart_summary = "=== 🛒 CART SUMMARY ==="
+    for i, item in enumerate(state.cart, 1):
+        cart_summary += f"\n{i}. {item.identifier} - {item.price} {item.currency}"
+    cart_summary += f"\n\n💰 Total: {state.cart_total:.2f}"
+
     checkout_decision = interrupt({
         "target": "checkout_decision",
         "fields": [
             {
                 "name": "user_query",
-                "prompt": "Would you like to proceed to checkout or continue shopping by entering more product details?",
+                "prompt": cart_summary + "\n\nQ: Would you like to keep shopping and tell me about another product, or go to checkout?",
                 "options": "",
             },
         ],

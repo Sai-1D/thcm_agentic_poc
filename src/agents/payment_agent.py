@@ -24,8 +24,8 @@ def payment_agent_node(state: State) -> State:
     card_details = interrupt({
         "target": "payment_info",
         "fields": [
-            {"name": "card_number", "prompt": "Please enter the card number:", "options": ""},
-            {"name": "cvv", "prompt": "Please enter the cvv:", "options": ""},
+            {"name": "card_number", "prompt": "Please enter your card number:", "options": ""},
+            {"name": "cvv", "prompt": "Please enter your CVV:", "options": ""},
         ],
     })
 
@@ -35,7 +35,8 @@ def payment_agent_node(state: State) -> State:
     if state.card_number == VALID_CARD and state.cvv == VALID_CVV:
         state.payment_status = "authorized"
         state.order_id = str(uuid.uuid4())[:8].upper()
-        state.messages.append(f"Payment authorized. Order ID: {state.order_id}")
+        state.messages.append(f"Your payment was successful! Order ID: {state.order_id}")
+        state.messages.append("Thank you for your purchase 🎉")
         logger.info("[PAYMENT_AGENT] Payment authorized. Order ID: %s", state.order_id)
     else:
         state.payment_status = "failed"
