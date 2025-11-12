@@ -9,6 +9,7 @@ class State:
     # User input
     user_query: str = ""
     intent: Optional[str] = None  # buy, issue / unknown (2 possible states for now. Check with Kalyan on the rest)
+    buy_state: str = "SELECT" # SELECT or CHECKOUT or PAYMENT
     selected_product_code: Optional[str] = None  # user-selected article number
     cart: List[Product] = field(default_factory=list)
     cart_total: float = 0.0

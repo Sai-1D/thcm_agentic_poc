@@ -6,10 +6,6 @@ def controller_node(state: State) -> State:
     logger.info("[CONTROLLER] Pass-through node, no changes applied.")
     return state  # just pass through
 
-def pause_node(state: State) -> State:
-    logger.info("[CONTROLLER] Pause Node reached. Goes to END currently")
-    return state
-
 def route_from_controller(state: State) -> str:
     logger.debug("[CONTROLLER] Routing decision, current state: %s", state)
 
@@ -26,15 +22,18 @@ def route_from_controller(state: State) -> str:
         elif not state.selected_products:
             logger.info("[CONTROLLER] Node selected: selector")
             return "selector"
-        elif not state.cart:
+        elif state.buy_state == 'SELECT':
             logger.info("[CONTROLLER] Node selected: cart_manager")
             return "cart_manager"
-        elif not state.payment_status:
+        elif state.buy_state == 'CHECKOUT':
+            logger.info("[CONTROLLER] Node selected: order_review")
+            return "order_review"
+        elif state.buy_state == 'PAYMENT':
             logger.info("[CONTROLLER] Node selected: payment")
             return "payment"
         else:
-            logger.info("[CONTROLLER] Node selected: pause")
-            return "pause"
+            logger.info("[CONTROLLER] Node selected: end")
+            return "end"
 
-    logger.info("[CONTROLLER] Fallback: Node selected: pause")
-    return "pause"  # fallback
+    logger.info("[CONTROLLER] Fallback: Node selected: end")
+    return "end"  # fallback

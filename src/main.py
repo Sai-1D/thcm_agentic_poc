@@ -15,9 +15,18 @@ while "__interrupt__" in result:
     for field in interrupt_value['fields']:
         if field['options']:
             print(field['options'])
-        user_inp = input(field['prompt']).strip()
+        user_inp = input(field['prompt']+' :').strip()
         resume_data[field['name']] = user_inp
     result = app.invoke(Command(resume=resume_data), config=config)
 
-print(State(**result))
+result_state = State(**result)
+
+print("\n=== 🛒 CART SUMMARY ===")
+for i, item in enumerate(result_state.cart, 1):
+    print(f"{i}. {item.identifier} - {item.price} {item.currency}")
+
+print(f"\n💰 Total Amount: {result_state.cart_total:.2f}")
+print(f"💳 Payment Status: {result_state.payment_status}\n")
+
+
 # print(result['messages'][0])
