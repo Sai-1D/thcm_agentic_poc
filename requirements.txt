@@ -6,3 +6,6 @@ uvicorn[standard]
 python-dotenv==1.0.1
 twilio==9.2.3
 python-multipart>=0.0.6
+langchain==0.3.0
+langchain-groq
+langchain-openai

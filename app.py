@@ -66,10 +66,9 @@ async def whatsapp_webhook(request: Request):
     termination_keywords = ["clear", "end", "close", "exit", "stop"]
     if message and any(word in message.lower() for word in termination_keywords):
         cache.remove(thread_id)
-        await send_msg("Chat Ended:)", thread_id)
+        await send_msg("Chat Ended:", thread_id)
     else:
         await run_graph(thread_id, message)
-
 
 if __name__ == "__main__":
     uvicorn.run(
