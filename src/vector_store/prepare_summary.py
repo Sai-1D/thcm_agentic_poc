@@ -3,6 +3,7 @@ import json
 from time import sleep
 from dotenv import load_dotenv
 import pandas as pd
+from pathlib import Path
 from langchain_groq import ChatGroq
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
@@ -203,12 +204,15 @@ def save_summaries_with_article_number(temp_file, read_file_path, write_file_pat
     df_output.to_csv(write_file_path, index=False)
     print(f"Summaries saved with article_number to {write_file_path}")
 
-READ_FILE_PATH = '/Users/admin/Desktop/one_digitals/thcm/thcm_poc/thcm_agentic_poc/data/product_catalog_updated.csv'
-WRITE_FILE_PATH = '/Users/admin/Desktop/one_digitals/thcm/thcm_poc/thcm_agentic_poc/data/product_summary.csv'
-TEMP_FILE = '/Users/admin/Desktop/one_digitals/thcm/thcm_poc/thcm_agentic_poc/data/summary_progress.json'
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent  # go from src/vector_store → src → thcm_agentic_poc
+DATA_DIR = BASE_DIR / "data"
+
+READ_FILE_PATH = DATA_DIR / "product_catalog_updated.csv"
+WRITE_FILE_PATH = DATA_DIR / "product_summary.csv"
+TEMP_FILE = DATA_DIR / "summary_progress.json"
 
 df_original = pd.read_csv(READ_FILE_PATH)
 # summarizer_chain = get_summarizer_chain()
 # run_summarizer(df_original, summarizer_chain)
 # save_summaries_with_article_number(TEMP_FILE, READ_FILE_PATH, WRITE_FILE_PATH)
-
