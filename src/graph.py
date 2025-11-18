@@ -1,4 +1,5 @@
 # src/graph.py
+
 from src.utils.data_loader import load_catalog
 from langgraph.graph import StateGraph, END, START
 from src.models.state import State

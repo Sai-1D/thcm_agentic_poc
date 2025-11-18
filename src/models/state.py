@@ -1,8 +1,8 @@
 # src/models/state.py
+
 from dataclasses import dataclass, field
 from typing import List, Optional
 from src.models.product import Product
-
 
 @dataclass
 class State:

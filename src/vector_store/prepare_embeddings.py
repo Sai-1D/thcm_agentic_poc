@@ -1,4 +1,5 @@
-# src.vector_store.prepare_embeddings.py
+# src/vector_store/prepare_embeddings.py
+
 import json
 from pathlib import Path
 import pandas as pd

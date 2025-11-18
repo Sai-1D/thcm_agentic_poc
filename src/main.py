@@ -1,7 +1,10 @@
 # src/main.py
+
 from src.models.state import State
 from langgraph.types import Command
 from src.graph import app
+from dotenv import load_dotenv
+load_dotenv()
 
 state = State()
 user_input = input("\n\nUser: ")

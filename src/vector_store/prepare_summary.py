@@ -1,3 +1,5 @@
+# src/vector_store/prepare_summary.py
+
 import os
 import json
 from time import sleep

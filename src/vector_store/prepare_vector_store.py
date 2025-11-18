@@ -1,4 +1,5 @@
 # src/vector_store/prepare_vector_store.py
+
 import os
 import json
 from pathlib import Path
