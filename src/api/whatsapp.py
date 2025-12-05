@@ -15,6 +15,8 @@ async def whatsapp_webhook(request: Request):
     sender = data.get("From")
     message = data.get("Body")
     thread_id = sender.replace("whatsapp:", "").replace("+", "")
+    print("\n\n------")
+    print(request)
 
     termination_keywords = ["clear", "end", "close", "exit", "stop"]
     if message and any(word in message.lower() for word in termination_keywords):

@@ -8,9 +8,11 @@ load_dotenv()
 
 from src.api.whatsapp import router as whatsapp_router
 from src.api.iot import router as iot_router
+from src.api.payment_gateway import router as payment_gateway_router
 
 fastapi_app.include_router(whatsapp_router)
 fastapi_app.include_router(iot_router)
+fastapi_app.include_router(payment_gateway_router)
 
 @fastapi_app.get("/")
 async def root():
