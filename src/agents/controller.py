@@ -19,16 +19,19 @@ def route_from_controller(state: State) -> str:
             return "search"
         elif not state.selected_product_code:
             logger.info("[CONTROLLER] Node selected: disambiguator")
-            return "disambiguator"  # ⏸️ Wait for user to select product
+            return "disambiguator"
         elif not state.selected_products:
             logger.info("[CONTROLLER] Node selected: selector")
             return "selector"
         elif state.buy_state == 'SELECT':
             logger.info("[CONTROLLER] Node selected: cart_manager")
             return "cart_manager"
-        elif state.buy_state == 'CHECKOUT':
+        elif state.buy_state == 'ORDER_REVIEW':
             logger.info("[CONTROLLER] Node selected: order_review")
             return "order_review"
+        elif state.buy_state == 'QUOTATION':
+            logger.info("[CONTROLLER] Node selected: quotation")
+            return "quotation"
         elif state.buy_state == 'PAYMENT':
             logger.info("[CONTROLLER] Node selected: payment")
             return "payment"

@@ -11,3 +11,4 @@ langchain-groq==0.3.2
 langchain-openai==0.3.19
 langchain-community==0.3.0
 faiss-cpu==1.12.0
+reportlab

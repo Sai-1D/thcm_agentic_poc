@@ -13,3 +13,4 @@ class Product:
     currency: Optional[str]
     unit: Optional[str]
     product_type: Optional[str]
+    count: int = 1

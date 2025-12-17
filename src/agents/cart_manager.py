@@ -19,7 +19,7 @@ def cart_manager_node(state: State) -> State:
         logger.info("[CART] Added to cart: %s (%s %s)", product.identifier, product.price, product.currency)
         state.messages.append(f"Added to cart: {product.identifier} ({product.price} {product.currency})")
 
-    state.buy_state = "CHECKOUT"
+    state.buy_state = "ORDER_REVIEW"
     logger.info("[CART] Cart total updated: %.2f", state.cart_total)
     state.messages.append(f"Cart total: {state.cart_total:.2f}")
 
@@ -40,7 +40,7 @@ def order_review_node(state: State) -> State:
         "fields": [
             {
                 "name": "user_query",
-                "prompt": cart_summary + "\n\nQ: Would you like to keep shopping and tell me about another product, or go to checkout?",
+                "prompt": cart_summary + "\n\nWhat would you like to do next?\n You can continue browsing, request a quotation for these items, or move ahead with checkout.",
                 "options": "",
             },
         ],
@@ -51,6 +51,10 @@ def order_review_node(state: State) -> State:
         state.buy_state = "PAYMENT"
         state.messages.append("User chose to proceed to PAYMENT.")
         logger.info("[ORDER_REVIEW] User chose to proceed to PAYMENT.")
+    elif any(x in user_query for x in ['quotation']):
+        state.buy_state = "QUOTATION"
+        state.messages.append("User chose to proceed to QUOTATION.")
+        logger.info("[ORDER_REVIEW] User chose to proceed to QUOTATION.")
     else:
         state.buy_state = "SELECT"
         state.user_query = user_query
@@ -61,4 +65,49 @@ def order_review_node(state: State) -> State:
         logger.info("[ORDER_REVIEW] User chose to continue shopping, selection cleared.")
 
     logger.debug("[ORDER_REVIEW] Exit node, updated state: %s", state)
+    return state
+
+def quotation_node(state: State) -> State:
+    logger.debug("[QUOTATION] Enter Quotation node, current state: %s", state)
+
+    if not state.user_or_company_name:
+        user_or_company_name_val = interrupt({
+            "target": "user_or_company_name",
+            "fields": [
+                {
+                    "name": "user_or_company_name",
+                    "prompt": "Before I prepare the quotation, I’ll need a few details.\n\nPlease share your name or company name.",
+                    "options": "",
+                },
+            ],
+        })
+        state.user_or_company_name = user_or_company_name_val["user_or_company_name"].strip()
+    
+    if not state.user_or_company_mail:
+        user_or_company_mail_val = interrupt({
+            "target": "user_or_company_mail",
+            "fields": [
+                {
+                    "name": "user_or_company_mail",
+                    "prompt": "\nPlease share your email or company email where I can send the quotation.",
+                    "options": "",
+                },
+            ],
+        })
+        state.user_or_company_mail = user_or_company_mail_val["user_or_company_mail"].strip()
+    
+    if not state.user_or_company_address:
+        user_or_company_address_val = interrupt({
+            "target": "user_or_company_address",
+            "fields": [
+                {
+                    "name": "user_or_company_address",
+                    "prompt": "\nPPlease share your billing or company address for the quotation.",
+                    "options": "",
+                },
+            ],
+        })
+        state.user_or_company_address = user_or_company_address_val["user_or_company_address"].strip()
+
+    logger.debug("[QUOTATION] Exit Quotation node, updated state: %s", state)
     return state
