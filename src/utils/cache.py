@@ -38,6 +38,7 @@ class Cache:
     def update(self, thread_id, data):
         cd = self.cache[thread_id]
         cur_index = cd.current_field_index
-        field_name = cd.expected_fields[cur_index]["name"]
-        cd.resume_data[field_name] = data
+        if cd.current_field_index < 0:
+            field_name = cd.expected_fields[cur_index]["name"]
+            cd.resume_data[field_name] = data
         cd.current_field_index += 1

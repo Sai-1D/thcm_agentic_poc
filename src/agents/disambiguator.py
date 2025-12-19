@@ -57,10 +57,10 @@ def selector_node(state: State) -> State:
         quantity_details = interrupt({
             "target": "product_quantity",
             "fields": [
-                {"name": "product_quantity", "prompt": "How many units would you like to add?\nYou can reply with a number (for example: 1 or 2)."},
+                {"name": "product_quantity", "prompt": "Q: How many units would you like to add? Please reply with a number (for example: 1 or 2)."},
             ],
         })
-        state.selected_products[0].count = quantity_details.get('product_quantity')
+        state.selected_products[0].quantity = int(quantity_details.get('product_quantity'))
 
         state.messages.append(f"Selected product: {selected[0].identifier}")
         logger.info("[SELECTOR_NODE] Product selected: %s", selected[0].identifier)

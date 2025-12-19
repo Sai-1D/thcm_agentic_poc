@@ -22,7 +22,11 @@ def orchestrator_node(state: State) -> State:
         "leaking", "report issue", "doesn't work", "malfunction"
     ]
 
-    if any(word in query for word in buy_keywords):
+    if any(word in query for word in ["quotation"]):
+        state.intent = "quotation"
+        state.messages.append("Intent classified as QUOTATION.")
+        logger.info("[ORCHESTRATOR_NODE] Intent classified as QUOTATION for query='%s'", query)
+    elif any(word in query for word in buy_keywords):
         state.intent = "buy"
         state.messages.append("Intent classified as BUY.")
         logger.info("[ORCHESTRATOR_NODE] Intent classified as BUY for query='%s'", query)

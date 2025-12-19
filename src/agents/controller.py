@@ -26,7 +26,7 @@ def route_from_controller(state: State) -> str:
         elif state.buy_state == 'SELECT':
             logger.info("[CONTROLLER] Node selected: cart_manager")
             return "cart_manager"
-        elif state.buy_state == 'ORDER_REVIEW':
+        elif state.buy_state == 'ORDER_REVIEW' or state.buy_state == "UPDATION":
             logger.info("[CONTROLLER] Node selected: order_review")
             return "order_review"
         elif state.buy_state == 'QUOTATION':
@@ -35,6 +35,28 @@ def route_from_controller(state: State) -> str:
         elif state.buy_state == 'PAYMENT':
             logger.info("[CONTROLLER] Node selected: payment")
             return "payment"
+        else:
+            logger.info("[CONTROLLER] Node selected: end")
+            return "end"
+    elif state.intent == "quotation":
+        if state.quotation_state == "ORDER_REVIEW" or state.quotation_state == "UPDATION":
+            logger.info("[CONTROLLER] Node selected: order_review")
+            return "order_review"
+        elif state.quotation_state == "QUOTATION":
+            logger.info("[CONTROLLER] Node selected: quotation")
+            return "quotation"
+        elif not state.matched_products:
+            logger.info("[CONTROLLER] Node selected: search")
+            return "search"
+        elif not state.selected_product_code:
+            logger.info("[CONTROLLER] Node selected: disambiguator")
+            return "disambiguator"
+        elif not state.selected_products:
+            logger.info("[CONTROLLER] Node selected: selector")
+            return "selector"
+        elif state.quotation_state == 'SELECT':
+            logger.info("[CONTROLLER] Node selected: cart_manager")
+            return "cart_manager"
         else:
             logger.info("[CONTROLLER] Node selected: end")
             return "end"

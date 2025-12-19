@@ -9,6 +9,7 @@ class State:
     user_query: str = ""  # User input
     intent: Optional[str] = None  # buy, issue / unknown (2 possible states for now. Check with Kalyan on the rest)
     buy_state: str = "SELECT" # SELECT or CHECKOUT or PAYMENT or Quotation
+    quotation_state: str = "ORDER_REVIEW"
 
     # Product search
     matched_products: List[Product] = field(default_factory=list)
@@ -19,6 +20,7 @@ class State:
     user_or_company_name: Optional[str] = None
     user_or_company_address: Optional[str] = None
     user_or_company_mail: Optional[str] = None
+    quotation_path: Optional[str] = None
 
     # checkout
     cart: List[Product] = field(default_factory=list)
@@ -32,3 +34,4 @@ class State:
 
     # Logs/messages
     messages: List[str] = field(default_factory=list)
+    message: Optional[str] = None

@@ -59,5 +59,5 @@ graph.add_edge("quotation", END)
 graph.add_edge("payment", END)
 graph.add_edge("issue_reporter", END)
 
-checkpointer = MemorySaver()   # Use an in-memory checkpointer for testing
+checkpointer = MemorySaver()
 app = graph.compile(checkpointer=checkpointer)

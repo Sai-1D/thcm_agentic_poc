@@ -13,4 +13,15 @@ class Product:
     currency: Optional[str]
     unit: Optional[str]
     product_type: Optional[str]
-    count: int = 1
+    quantity: int = 1
+
+    @property
+    def total_price(self) -> Optional[float]:
+        if self.price is None:
+            return None
+        if self.quantity <= 0:
+            return None
+        try:
+            return self.quantity * float(self.price)
+        except (TypeError, ValueError):
+            return None
