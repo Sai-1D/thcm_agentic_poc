@@ -195,4 +195,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Quotations
+public/quotations/
+
 # End of https://www.toptal.com/developers/gitignore/api/python,windows,pycharm,vscode

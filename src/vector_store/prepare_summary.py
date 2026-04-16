@@ -6,14 +6,12 @@ from time import sleep
 from dotenv import load_dotenv
 import pandas as pd
 from pathlib import Path
-from langchain_groq import ChatGroq
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.schema.output_parser import StrOutputParser
 from langchain.prompts import PromptTemplate
 
 load_dotenv()
-GROQ_API_KEY = os.environ['GROQ_API_KEY']
 OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
 
 
