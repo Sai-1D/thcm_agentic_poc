@@ -67,6 +67,8 @@ def selector_node(state: State) -> State:
     else:
         state.messages.append("Invalid selection. No matching product found.")
         logger.warning("[SELECTOR_NODE] Invalid selection: %s", code)
+        # Clear the invalid selection to prevent infinite loop
+        state.selected_product_code = None
 
     logger.debug("[SELECTOR_NODE] End: %s", state)
     return state

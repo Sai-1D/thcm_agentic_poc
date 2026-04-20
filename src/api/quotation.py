@@ -18,7 +18,7 @@ def load_pdf_from_disk(qid: str) -> bytes:
     with open(file_path, "rb") as f:
         return f.read()
 
-router = APIRouter(prefix="/api", tags=["Quotation"])
+router = APIRouter(prefix="/thcm-agentic-poc/api", tags=["Quotation"])
 
 @router.get("/quotation/{qid}.pdf")
 def get_quotation(qid: str):

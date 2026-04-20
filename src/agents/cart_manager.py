@@ -169,45 +169,48 @@ def order_review_node(state: State) -> State:
 def quotation_node(state: State, config) -> State:
     logger.debug("[QUOTATION] Enter Quotation node, current state: %s", state)
 
-    if not state.user_or_company_name:
-        user_or_company_name_val = interrupt({
-            "target": "user_or_company_name",
-            "fields": [
-                {
-                    "name": "user_or_company_name",
-                    "prompt": "Q: I’m getting your quotation ready. Could you please share your name or company name?",
-                    "options": "",
-                },
-            ],
-        })
-        state.user_or_company_name = user_or_company_name_val["user_or_company_name"].strip()
+    # if not state.user_or_company_name:
+    #     user_or_company_name_val = interrupt({
+    #         "target": "user_or_company_name",
+    #         "fields": [
+    #             {
+    #                 "name": "user_or_company_name",
+    #                 "prompt": "Q: I’m getting your quotation ready. Could you please share your name or company name?",
+    #                 "options": "",
+    #             },
+    #         ],
+    #     })
+    #     state.user_or_company_name = user_or_company_name_val["user_or_company_name"].strip()
     
-    if not state.user_or_company_mail:
-        user_or_company_mail_val = interrupt({
-            "target": "user_or_company_mail",
-            "fields": [
-                {
-                    "name": "user_or_company_mail",
-                    "prompt": "\nQ: Please share your email or company email where I can send the quotation.",
-                    "options": "",
-                },
-            ],
-        })
-        state.user_or_company_mail = user_or_company_mail_val["user_or_company_mail"].strip()
+    # if not state.user_or_company_mail:
+    #     user_or_company_mail_val = interrupt({
+    #         "target": "user_or_company_mail",
+    #         "fields": [
+    #             {
+    #                 "name": "user_or_company_mail",
+    #                 "prompt": "\nQ: Please share your email or company email where I can send the quotation.",
+    #                 "options": "",
+    #             },
+    #         ],
+    #     })
+    #     state.user_or_company_mail = user_or_company_mail_val["user_or_company_mail"].strip()
     
-    if not state.user_or_company_address:
-        user_or_company_address_val = interrupt({
-            "target": "user_or_company_address",
-            "fields": [
-                {
-                    "name": "user_or_company_address",
-                    "prompt": "\nQ: Please share your billing or company address for the quotation.",
-                    "options": "",
-                },
-            ],
-        })
-        state.user_or_company_address = user_or_company_address_val["user_or_company_address"].strip()
+    # if not state.user_or_company_address:
+    #     user_or_company_address_val = interrupt({
+    #         "target": "user_or_company_address",
+    #         "fields": [
+    #             {
+    #                 "name": "user_or_company_address",
+    #                 "prompt": "\nQ: Please share your billing or company address for the quotation.",
+    #                 "options": "",
+    #             },
+    #         ],
+    #     })
+    #     state.user_or_company_address = user_or_company_address_val["user_or_company_address"].strip()
     
+    state.user_or_company_name = "User 1"
+    state.user_or_company_mail = "user1@example.com"
+    state.user_or_company_address = "Address 1, City 1, State 1, Pincode 1"
     quotation_data = Quotation(customer=CustomerDetails(company_name=state.user_or_company_name,
                                                         email=state.user_or_company_mail,
                                                         address=state.user_or_company_address, 
